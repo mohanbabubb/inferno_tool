@@ -16,7 +16,31 @@ namespace :builpack do
 
 	p_get_releases = RestClient.get "#{p_url_releases}", {:Authorization => 'Token $pivotal_token', :accept => 'json', :content_type => 'json'}
 	p_releases = JSON.parse(p_get_releases.body)	
- 	puts p_releases
+	
+	p_releases["releases"].each do |item|
+	
+	RR = Release.new	
+	RR.r_id = item["id"]
+	RR.version = item["version"]
+	RR.release_type = item["release_type"]
+	RR.release_date = item["release_date"]
+	RR.release_notes_url = item["release_notes_url"]
+	RR.availability = item["availability"]
+	RR.eula_id = item["eula"]["id"]
+	RR.eula_slug = item["eula"]["slug"]
+	RR.eula_name = item["eula"]["name"]
+	RR.eula_links_self = item["eula"]["_links"]["self"]["href"]
+	RR.eccn = item["eccn"]
+	RR.license_exception = item["license_exception"]
+	RR.updated_at = item["updated_at"]
+	RR.software_files_updated_at = item["software_files_updated_at"]
+	RR.links_self = item["_links"]["self"]["href"]
+	RR.links_eula_acceptance = item["_links"]["eula_acceptance"]["href"]
+	RR.links_product_files = item["_links"]["product_files"]["href"]
+	RR.links_file_groups = item["_links"]["file_groups"]["href"]
+	RR.links_user_groups = item["_links"]["user_groups"]["href"]
+ 	RR.save
+ 	end
  end
 
 end
